@@ -1,0 +1,405 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title>Digital Support- Team Activity</title>
+
+  <link rel='stylesheet' type='text/css' href='css/libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
+  <link rel="stylesheet" type="text/css" href="css/jquery.weekcalendar.css" />
+	<link rel='stylesheet' type='text/css' href='css/demo.css' />
+  <link rel="stylesheet" type="text/css" href="css/skins/default.css" />
+  <link rel="stylesheet" type="text/css" href="css/skins/gcalendar.css" />
+  <style type="text/css">
+    body {
+      font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+      margin: 0;
+    }
+
+    h1 {
+      margin:0 0 2em;
+      padding: 0.5em;
+      font-size: 1.3em;
+    }
+
+    p.description {
+      font-size: 0.8em;
+      padding: 1em;
+      position: absolute;
+      top: 1.2em;
+      margin-right: 400px;
+    }
+
+    #calendar_selection {
+      font-size: 0.7em;
+      position: absolute;
+      top: 1em;
+      right: 1em;
+      padding: 1em;
+      background: #ffc;
+      border: 1px solid #dda;
+      width: 270px;
+    }
+
+    #message {
+      font-size: 0.7em;
+      position: absolute;
+      top: 1em;
+      right: 320px;
+      padding: 1em;
+      background: #ddf;
+      border: 1px solid #aad;
+      width: 270px;
+    }
+  </style>
+
+  <script type='text/javascript' src='http://code.jquery.com/jquery-1.7.1.js'></script>
+  
+  <script type='text/javascript' src='css/libs/jquery-ui-1.8.11.custom.min.js'></script>
+  <script type='text/javascript' src='css/libs/jquery-ui-i18n.js'></script>
+  <script type="text/javascript" src="js/jquery.weekcalendar.js"></script>
+ 
+  <script type="text/javascript">
+   (function($) {
+    var d = new Date();
+    d.setDate(d.getDate() - d.getDay());
+    var year = d.getFullYear();
+    var month = d.getMonth();
+    var day = d.getDate();
+    		{ events :  [
+    		             {'id':1, 'start':'Wed Mar 06 2013 12:00:00 GMT+0530 (IST)', 'end':'Wed Mar 06 2013 17:30:00 GMT+0530 (IST)', 'title':'jgkjgkg',userId:2 },
+                 {'id':2, 'start':'Wed Mar 06 2013 12:45:00 GMT+0530 (IST)', 'end':'Wed Mar 06 2013 17:30:00 GMT+0530 (IST)', 'title':'jhfjhfjhf',userId:5 }
+    		             ]  } 
+  var eventData1 = {
+			
+			 events : [
+				{'id':1, 'start':'Wed Mar 06 2013 12:00:00 GMT+0530 (IST)', 'end':'Wed Mar 06 2013 17:30:00 GMT+0530 (IST)', 'title':'jgkjgkg',userId:2 }, 
+			{'id':2, 'start':'Wed Mar 06 2013 12:45:00 GMT+0530 (IST)', 'end':'Wed Mar 06 2013 17:30:00 GMT+0530 (IST)', 'title':'jhfjhfjhf',userId:5 },
+        {'id':3, 'start': new Date(year, month, day+1, 18), 'end': new Date(year, month, day+1, 18, 45), 'title': 'Hair cut', userId: 1},
+        {'id':4, 'start': 'Fri Mar 05 2013 11:00:00 GMT+0530 (IST)', 'end': 'Fri Mar 05 2013 15:00:00 GMT+0530 (IST)', 'title': 'Team breakfast', userId: [0,1,2,3]},
+        {'id':5, 'start': 'Fri Mar 05 2013 15:00:00 GMT+0530 (IST)', 'end': 'Fri Mar 05 2013 18:00:00 GMT+0530 (IST)', 'title': 'Team Lunch', userId: [8,5,6,7]},
+        {'id':6, 'start': 'Fri Mar 05 2013 19:00:00 GMT+0530 (IST)', 'end': 'Fri Mar 05 2013 20:00:00 GMT+0530 (IST)', 'title': 'Team lunch 0', userId: 0},
+        {'id':7, 'start': 'Fri Mar 05 2013 19:00:00 GMT+0530 (IST)', 'end': 'Fri Mar 05 2013 20:00:00 GMT+0530 (IST)', 'title': 'Team lunch 1', userId: 1},
+         {'id':8, 'start': 'Fri Mar 05 2013 19:00:00 GMT+0530 (IST)', 'end': 'Fri Mar 05 2013 20:00:00 GMT+0530 (IST)', 'title': 'Team lunch 1', userId: 0},
+
+        {'id':9, 'start': new Date(year, month, day+1, 14), 'end': new Date(year, month, day+1, 15), 'title': 'Product showcase', userId: 1}
+      ]
+		};
+                
+   $(document).ready(function() {
+    console.log("***hey I am ready*******");
+    var $calendar = $('#calendar');
+      var id = 10;
+      console.log("***$calendar*******"+$calendar);
+      $calendar.weekCalendar({
+        data: $.getJSON("http://localhost:9280/QnA/activityLog"),
+        timeslotsPerHour: 4,
+        scrollToHourMillis : 0,
+         allowCalEventOverlap : true,
+        overlapEventsSeparate: true,
+        height: function($calendar){
+          return $(window).height() - $('h1').outerHeight(true);
+        },
+        eventRender : function(calEvent, $event) {
+         console.log("***eventRender called*******");
+
+          if (calEvent.end.getTime() < new Date().getTime()) {
+            $event.css('backgroundColor', '#aaa');
+            $event.find('.wc-time').css({
+              backgroundColor: '#999',
+              border:'1px solid #888'
+            });
+          }
+        },
+        draggable : function(calEvent, $event) {
+          console.log("***draggable called*******"+calEvent+$event);
+         return calEvent.readOnly != true;
+      },
+      resizable : function(calEvent, $event) {
+       console.log("***resizable called*******"+calEvent+$event);
+
+         return calEvent.readOnly != true;
+      },
+        eventNew : function(calEvent, $event, FreeBusyManager, calendar) {
+          console.log("***eventNew called*******"+calEvent+$event);
+         var $dialogContent = $("#event_edit_container");
+         resetForm($dialogContent);
+         var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
+         var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
+         var titleField = $dialogContent.find("input[name='title']");
+         var bodyField = $dialogContent.find("textarea[name='body']");
+         console.log("***titleField.value called*******"+titleField);
+
+         $dialogContent.dialog({
+            modal: true,
+            title: "New Calendar Event",
+            close: function() {
+               $dialogContent.dialog("destroy");
+               $dialogContent.hide();
+               $('#calendar').weekCalendar("removeUnsavedEvents");
+            },
+            buttons: {
+               save : function() {
+                  calEvent.id = id;
+                  id++;
+                  calEvent.start = new Date(startField.val());
+                  calEvent.end = new Date(endField.val());
+                  calEvent.title = titleField.val();
+                  calEvent.body = bodyField.val();
+
+                  $calendar.weekCalendar("removeUnsavedEvents");
+                  $calendar.weekCalendar("updateEvent", calEvent);
+                
+                  $.ajax({
+                      type: "POST",
+                      url: "activityLog",// where you wanna post
+                      data : "title=" + calEvent.title + "&start=" + calEvent.start + "&end=" + calEvent.end + "&body="+ calEvent.body, 
+                     
+                   //   processData: false,
+                     // contentType: false,
+                      success: function(data) {console.log(data)} 
+                  });
+                  
+                  console.log("***insert method::calEvent.id called*******"+calEvent.id);
+                  console.log("***insert method::calEvent.body called*******"+calEvent.body);
+                  console.log("***insert method::calEvent.title called*******"+calEvent.title);
+                  console.log("***insert method::calEvent.start called*******"+calEvent.start);
+                  console.log("***insert method::calEvent.end called*******"+calEvent.end);
+                  $dialogContent.dialog("close");
+               },
+               cancel : function() {
+                  $dialogContent.dialog("close");
+               }
+            }
+         }).show();
+
+         
+         $dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
+         setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
+
+      },
+      eventDrop : function(calEvent, $event) {
+        
+      },
+      eventResize : function(calEvent, $event) {
+      },
+      eventClick : function(calEvent, $event) {
+
+         if (calEvent.readOnly) {
+            return;
+         }
+
+         var $dialogContent = $("#event_edit_container");
+         resetForm($dialogContent);
+         var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
+         var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
+         var titleField = $dialogContent.find("input[name='title']").val(calEvent.title);
+         var bodyField = $dialogContent.find("textarea[name='body']");
+         bodyField.val(calEvent.body);
+
+         $dialogContent.dialog({
+            modal: true,
+            title: "Edit - " + calEvent.title,
+            close: function() {
+               $dialogContent.dialog("destroy");
+               $dialogContent.hide();
+               $('#calendar').weekCalendar("removeUnsavedEvents");
+            },
+            buttons: {
+               save : function() {
+
+                  calEvent.start = new Date(startField.val());
+                  calEvent.end = new Date(endField.val());
+                  calEvent.title = titleField.val();
+                  calEvent.body = bodyField.val();
+
+                  $calendar.weekCalendar("updateEvent", calEvent);
+                  console.log("***insert method::calEvent.id called*******"+calEvent.id);
+                  console.log("***update method::calEvent.body called*******"+calEvent.body);
+                  console.log("***update method::calEvent.title called*******"+calEvent.title);
+                  console.log("***update method::calEvent.start called*******"+calEvent.start);
+                  console.log("***update method::calEvent.end called*******"+calEvent.end);
+                  $dialogContent.dialog("close");
+               },
+               "delete" : function() {
+                  $calendar.weekCalendar("removeEvent", calEvent.id);
+                  $dialogContent.dialog("close");
+               },
+               cancel : function() {
+                  $dialogContent.dialog("close");
+               }
+            }
+         }).show();
+
+         var startField = $dialogContent.find("select[name='start']").val(calEvent.start);
+         var endField = $dialogContent.find("select[name='end']").val(calEvent.end);
+         $dialogContent.find(".date_holder").text($calendar.weekCalendar("formatDate", calEvent.start));
+         setupStartAndEndTimeFields(startField, endField, calEvent, $calendar.weekCalendar("getTimeslotTimes", calEvent.start));
+         $(window).resize().resize(); //fixes a bug in modal overlay size ??
+
+      },
+      eventMouseover : function(calEvent, $event) {
+      },
+      eventMouseout : function(calEvent, $event) {
+      },
+      noEvents : function() {
+
+      },
+     
+      data : function(start, end, callback) {
+                var dataSource ="1";
+          if (dataSource === '1') {
+            callback(eventData1);
+          } else if(dataSource === '2') {
+            callback(eventData2);
+          } else {
+            callback({
+              options: {
+                defaultFreeBusy: {
+                  free:true
+                }
+              },
+              events: ['Working with Harish', 'In Progress tickets']
+            });
+        }  
+      }, 
+        users: ['Akhil', 'Chandan', 'Beena', 'Ratheesh', 'Karthik','Nitesh Kumar V', 'Vellu', 'QA Team', 'Pandharinath', 'Harish','Sudhir', 'Kurian', 'Margratte', 'Nitesh Anand', 'Chinmay'],
+        //showAsSeparateUser: true,
+        displayOddEven: true,
+        displayFreeBusys: true,
+        daysToShow: 1,
+        headerSeparator: ' ',
+        useShortDayNames: true,
+        // I18N
+        
+        dateFormat: 'd F y'
+      });  // Webcalendar
+
+      function resetForm($dialogContent) {
+      $dialogContent.find("input").val("");
+      $dialogContent.find("textarea").val("");
+   }
+
+   function getEventData() {
+    console.log("***getEventData() called*******");
+   
+      return {
+         events : [
+			   {"id":1, "start": new Date(year, month, day, 12), "end": new Date(year, month, day, 13, 30),"title":"Lunch with Mike"},
+			   {"id":2, "start": new Date(year, month, day, 14), "end": new Date(year, month, day, 14, 45),"title":"Dev Meeting"},
+			   {"id":3, "start": new Date(year, month, day + 1, 18), "end": new Date(year, month, day + 1, 18, 45),"title":"Hair cut"},
+			   {"id":4, "start": new Date(year, month, day - 1, 8), "end": new Date(year, month, day - 1, 9, 30),"title":"Team breakfast"},
+			   {"id":5, "start": new Date(year, month, day + 1, 14), "end": new Date(year, month, day + 1, 15),"title":"Product showcase"}
+			]
+      };
+   }
+
+
+   /*
+    * Sets up the start and end time fields in the calendar event
+    * form for editing based on the calendar event being edited
+    */
+   function setupStartAndEndTimeFields($startTimeField, $endTimeField, calEvent, timeslotTimes) {
+
+      for (var i = 0; i < timeslotTimes.length; i++) {
+         var startTime = timeslotTimes[i].start;
+         var endTime = timeslotTimes[i].end;
+         var startSelected = "";
+         if (startTime.getTime() === calEvent.start.getTime()) {
+            startSelected = "selected=\"selected\"";
+         }
+         var endSelected = "";
+         if (endTime.getTime() === calEvent.end.getTime()) {
+            endSelected = "selected=\"selected\"";
+         }
+         $startTimeField.append("<option value=\"" + startTime + "\" " + startSelected + ">" + timeslotTimes[i].startFormatted + "</option>");
+         $endTimeField.append("<option value=\"" + endTime + "\" " + endSelected + ">" + timeslotTimes[i].endFormatted + "</option>");
+
+      }
+      $endTimeOptions = $endTimeField.find("option");
+      $startTimeField.trigger("change");
+   }
+
+   var $endTimeField = $("select[name='end']");
+   var $endTimeOptions = $endTimeField.find("option");
+
+   //reduces the end time options to be only after the start time options.
+   $("select[name='start']").change(function() {
+      var startTime = $(this).find(":selected").val();
+      var currentEndTime = $endTimeField.find("option:selected").val();
+      $endTimeField.html(
+            $endTimeOptions.filter(function() {
+               return startTime < $(this).val();
+            })
+            );
+
+      var endTimeSelected = false;
+      $endTimeField.find("option").each(function() {
+         if ($(this).val() === currentEndTime) {
+            $(this).attr("selected", "selected");
+            endTimeSelected = true;
+            return false;
+         }
+      });
+
+      if (!endTimeSelected) {
+         //automatically select an end date 2 slots away.
+         $endTimeField.find("option:eq(1)").attr("selected", "selected");
+      }
+
+   });
+
+
+   var $about = $("#about");
+
+   $("#about_button").click(function() {
+      $about.dialog({
+         title: "About this calendar demo",
+         width: 600,
+         close: function() {
+            $about.dialog("destroy");
+            $about.hide();
+         },
+         buttons: {
+            close : function() {
+               $about.dialog("close");
+            }
+         }
+      }).show();
+   });
+      
+   
+  });
+  })(jQuery); 
+   
+  </script>
+</head>
+<body>
+  <h1>Activity calendar</h1>
+
+  <div id="calendar"></div>
+  
+  <div id="event_edit_container">
+		<form>
+			<input type="hidden" />
+			<ul>
+				<li>
+					<span>Date: </span><span class="date_holder"></span> 
+				</li>
+				<li>
+					<label for="start">Start Time: </label><select name="start"><option value="">Select Start Time</option></select>
+				</li>
+				<li>
+					<label for="end">End Time: </label><select name="end"><option value="">Select End Time</option></select>
+				</li>
+				<li>
+					<label for="title">Title: </label><input type="text" name="title" />
+				</li>
+				<li>
+					<label for="body">Body: </label><textarea name="body"></textarea>
+				</li>
+			</ul>
+		</form>
+	</div>
+  
+</body>
+</html>

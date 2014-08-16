@@ -1,0 +1,40 @@
+<project xmlns:ant="jelly:ant" xmlns:j="jelly:core" xmlns:u="jelly:util">
+
+    <postGoal name="package">
+        <echo>copying static assets from ${basedir}/${pom.artifactId}.war to ${maven.build.dir}/${pom.artifactId} </echo>
+        <copy todir="${maven.build.dir}/${pom.artifactId}">
+            <fileset dir="${basedir}/${pom.artifactId}.war">
+                <exclude name="templatedata/**" />
+                <exclude name="images/**" />
+                <exclude name="config/**" />
+                <exclude name="contentxml/**" />
+                <exclude name="applicationxml/**" />
+                <exclude name="WEB-INF/**" />
+            </fileset>
+        </copy>
+    </postGoal>
+
+    <goal name="teamsite-war-link" >
+        <attainGoal name="teamsite-link-common" />
+        <exec dir="${basedir}" executable="${cnsymlink.cmd}" os="SunOS, Mac OS X" failonerror="false" >
+           <arg value="-e" />
+           <arg value="(js|config|css|nocount|test|w3c|xslt)" />
+           <arg value="${webcontent_src_dir}" />
+           <arg value="${webdir_symlink}" />
+        </exec>
+        <!-- Link in the sweeps -->
+        <mkdir dir="${webdir_symlink}/WEB-INF/pages" />
+        <exec dir="${basedir}" executable="${cnsymlink.cmd}" os="SunOS, Mac OS X" failonerror="false" >
+            <arg value="${webcontent_src_dir}/WEB-INF/pages" />
+            <arg value="${webdir_symlink}/WEB-INF/pages" />
+        </exec>
+        <exec dir="${basedir}" executable="${cnsymlink.cmd}"
+                      os="SunOS, Mac OS X" failonerror="false" >
+           <arg value="-t" />
+           <arg value="${webcontent_src_dir}/config" />
+           <arg value="${webdir_symlink}/WEB-INF/conf/url/teamsite" />
+        </exec>
+    </goal>
+
+</project>
+

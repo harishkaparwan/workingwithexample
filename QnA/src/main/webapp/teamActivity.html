@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title>Digital Support- Team Activity</title>
+
+  <link rel='stylesheet' type='text/css' href='css/libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
+  <link rel="stylesheet" type="text/css" href="css/calendar.min.css" />
+  <style type="text/css">
+    body {
+      font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+      margin: 0;
+    }
+
+    h1 {
+      margin:0 0 2em;
+      padding: 0.5em;
+      font-size: 1.3em;
+    }
+
+    p.description {
+      font-size: 0.8em;
+      padding: 1em;
+      position: absolute;
+      top: 1.2em;
+      margin-right: 400px;
+    }
+
+    #calendar_selection {
+      font-size: 0.7em;
+      position: absolute;
+      top: 1em;
+      right: 1em;
+      padding: 1em;
+      background: #ffc;
+      border: 1px solid #dda;
+      width: 270px;
+    }
+
+    #message {
+      font-size: 0.7em;
+      position: absolute;
+      top: 1em;
+      right: 320px;
+      padding: 1em;
+      background: #ddf;
+      border: 1px solid #aad;
+      width: 270px;
+    }
+  </style>
+
+  <script type='text/javascript' src='http://code.jquery.com/jquery-1.7.1.js'></script>
+  
+  <script type='text/javascript' src='css/libs/jquery-ui-1.8.11.custom.min.js'></script>
+  <script type='text/javascript' src='css/libs/jquery-ui-i18n.js'></script>
+  <script type="text/javascript" src="js/weekcalendar.min.js"></script>
+ 
+  
+</head>
+<body>
+  <h1>Activity calendar</h1>
+
+  <div id="calendar"></div>
+  
+  <div id="event_edit_container">
+		<form>
+			<input type="hidden" />
+			<ul>
+				<li>
+					<span>Date: </span><span class="date_holder"></span> 
+				</li>
+				<li>
+					<label for="start">Start Time: </label><select name="start"><option value="">Select Start Time</option></select>
+				</li>
+				<li>
+					<label for="end">End Time: </label><select name="end"><option value="">Select End Time</option></select>
+				</li>
+				<li>
+					<label for="title">Title: </label><input type="text" name="title" />
+				</li>
+				<li>
+					<label for="body">Body: </label><textarea name="body"></textarea>
+				</li>
+			</ul>
+		</form>
+	</div>
+  
+</body>
+</html>
