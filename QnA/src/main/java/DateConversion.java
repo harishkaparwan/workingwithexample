@@ -35,7 +35,7 @@ public class DateConversion {
 		System.out.println("---properties---"+properties.getProperty("projectName"));
 		
 		LinkedList<LinkedList<String>> rowDataLinkedList = readFormData.getAllData(
-				"CN_DIGITAL", "01-DEC-2012", "31-DEC-2012", "Bug Fixing", "8");
+				"HCK", "01-DEC-2012", "31-DEC-2012", "Bug Fixing", "8");
 
 	 System.out.println("rowDataLinkedList.size()---"+rowDataLinkedList.size());
 		try {
@@ -58,7 +58,7 @@ public class DateConversion {
 		wordMLPackage.getMainDocumentPart().addStyledParagraphOfText(
 				"SubTitle", "");
 		wordMLPackage.getMainDocumentPart().addStyledParagraphOfText(
-				"TableGrid", " Company Name-L&T Infotech ");
+				"TableGrid", " Company Name-H&A Times ");
 
 		wordMLPackage.getMainDocumentPart().addStyledParagraphOfText(
 				"SubTitle", "");

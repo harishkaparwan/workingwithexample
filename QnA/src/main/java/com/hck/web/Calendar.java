@@ -38,10 +38,10 @@ public class Calendar extends BaseActivityCal {  // class may be renamed
     eventsDatabase = "jdbc:mysql://127.0.0.1:3307/test"; // location of the MySQL database
     mySQLUser = "root";  // internal MySQL database user/password
     mySQLPass = "";
-    authMessage = "For this demo version, the secret phrase is: KilroyWasHere";
-    secretPassPhrase = "KilroyWasHere"; // required by users to add,edit,delete events
+    authMessage = "For this demo version, the secret phrase is: Harry";
+    secretPassPhrase = "Harry"; // required by users to add,edit,delete events
     cookieMaxAge = 1; // week
-    titleBar = "L&T Digital Support Leave Calendar "; // label shown on the top bar of the Calendar
+    titleBar = "H&A Times Support Leave Calendar "; // label shown on the top bar of the Calendar
     cTFontsColor = "#FFFF00";  // yellow
     cTopBarColor = "#0000AA";  // dark blue
     cDayBarColor = "#0000AA";  // dark blue
