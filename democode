@@ -1,3 +1,25 @@
 Demo code
 
 https://www.typescriptlang.org/play?#code/GYVwdgxgLglg9mABFATuCBDKBTAygB2whgwBsBhACwxQ2mxQGcBBYHFAUQFsMZSAKHAA8oASkQBvAFCJEAejmIAItmAww2ZJU0psAc2xDE+LOyTA4KRIdR1YYPVs3YefRBgAmH3Y0YzEEAiMUNaupABK+oaIALzyANrMALQAWhhJAF4ADEkAnAB0APoApADUSQC6pQACianp2Xn5laUAOvl1aZkVEgBMADQAvnIA3FL+CogAYuoeTohqTCEAbmQwcy68pO5ePoyI6vPCISCM6o66BkL+gWDBiDxQEJSxyDb5j8-8m3yRV6JjWT+GDARD8T6UcTSWSySYAcWwISg2gOYA80TgoORmkW92eNDsDHcbCJ2IeWGe2A2YR23mwvn8slu91m0TiEPyrKMpXJT0o8SyFXypGwDmRY0Z8kUkS4cGWmgwYAAnohGIRiGQAtRaPQmMT2PMfttPHSGTCAkEkWhIFgqQAVGyvY75RggABGwRQ534WX6qPRQgB43NuigIBQSFQ6FtHgdIkBiEGwaliAAkqCwHBEKtSOtQltaXsDvsLOAPH7Q+HIyjLDA9OpNcd-JWI2941Ik1JJhwhBguPgRYhThgDAAuKTMpGOuIAIiN1UMfYH2HygS4pUYlEsUFISpnY0nyGtmBwsenR+jOAIRBIFG1hKYrHY3C2ghsQeZcBFwrgekEx5jOMxDGSYAHkQCgfAINHRAZwACWwUhSDgP0uBVI1i0QAArOBKDAfIPDgbAF17ftvzXGcgA
+
+
+import kafka
+
+def connect_to_kafka():
+    """Connects to Kafka using SSL."""
+    bootstrap_servers = "localhost:9093"
+    ssl_truststore_location = "/path/to/truststore.pem"
+    ssl_truststore_password = "password"
+
+    consumer = kafka.KafkaConsumer("my-topic",
+                                  bootstrap_servers=bootstrap_servers,
+                                  ssl_truststore_location=ssl_truststore_location,
+                                  ssl_truststore_password=ssl_truststore_password)
+
+    return consumer
+
+
+if __name__ == "__main__":
+    consumer = connect_to_kafka()
+    for message in consumer:
+        print(message)
