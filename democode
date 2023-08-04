@@ -23,3 +23,20 @@ if __name__ == "__main__":
     consumer = connect_to_kafka()
     for message in consumer:
         print(message)
+
+
+
+db.createCollection("myCollection", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["myIntegerField"],
+      properties: {
+        myIntegerField: {
+          bsonType: "int",
+          maximum: 100
+        }
+      }
+    }
+  }
+})
