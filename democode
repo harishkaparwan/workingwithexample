@@ -40,3 +40,19 @@ db.createCollection("myCollection", {
     }
   }
 })
+
+{
+  $jsonSchema: {
+    bsonType: 'object',
+    required: [
+      'peso'
+    ],
+    properties: {
+      peso: {
+        bsonType: 'int',
+        maximum: 16,
+        description: 'peso should have max value is 15.'
+      }
+    }
+  }
+}
