@@ -56,3 +56,20 @@ db.createCollection("myCollection", {
     }
   }
 }
+
+
+
+db.createCollection("postpurchase-store-receipt", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["counter"],
+      properties: {
+        counter: {
+          bsonType: "int",
+          maximum: 15
+        }
+      }
+    }
+  }
+})
