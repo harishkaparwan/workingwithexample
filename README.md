@@ -14,19 +14,18 @@ Read the exported JSON file.
 Connect to MongoDB using Mongoose or MongoDB Node.js driver.
 Save the Postman collection data into MongoDB.
 
+// data
+
+
 const MongoClient = require('mongodb').MongoClient;
 const fs = require('fs');
 
-// Connection URL
 const url = 'mongodb://localhost:27017';
 
-// Database Name
 const dbName = 'postmanCollections';
 
-// Read the Postman collection JSON file
 const collectionData = JSON.parse(fs.readFileSync('path-to-exported-collection.json', 'utf-8'));
 
-// Connect to the MongoDB client
 MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
   if (err) throw err;
 
@@ -42,6 +41,13 @@ MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, (e
     client.close();
   });
 });
+
+
+
+
+
+
+
 
 
 //server.js
