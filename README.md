@@ -120,3 +120,32 @@ MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, as
 
   client.close();
 });
+
+
+
+import json
+
+# Load the Postman Collection
+with open('postman_collection.json', 'r') as file:
+    postman_collection = json.load(file)
+
+# Initialize an empty list to store the MongoDB documents
+mongodb_documents = []
+
+# Iterate through the items in the Postman Collection
+for item in postman_collection.get('item', []):
+    # Create a MongoDB document for each item
+    doc = {
+        'name': item.get('name'),
+        'method': item['request']['method'],
+        'url': item['request']['url'],
+        'headers': {header['key']: header['value'] for header in item['request'].get('header', [])},
+        'body': item['request'].get('body', {})
+    }
+    # Append the document to the list
+    mongodb_documents.append(doc)
+
+# Save the MongoDB documents to a new JSON file
+with open('mongodb_documents.json', 'w') as file:
+    json.dump(mongodb_documents, file, indent=4)
+
