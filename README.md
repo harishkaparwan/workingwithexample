@@ -149,3 +149,60 @@ for item in postman_collection.get('item', []):
 with open('mongodb_documents.json', 'w') as file:
     json.dump(mongodb_documents, file, indent=4)
 
+
+
+
+
+// node js mongodb
+
+
+const fs = require('fs');
+const path = require('path');
+
+// Define the input and output file paths
+const inputFilePath = path.join(__dirname, 'postman_collection.json');
+const outputFilePath = path.join(__dirname, 'mongodb_format.json');
+
+// Read the Postman Collection JSON file
+fs.readFile(inputFilePath, 'utf8', (err, data) => {
+  if (err) {
+    console.error('Error reading the file:', err);
+    return;
+  }
+
+  // Parse the JSON data
+  const postmanCollection = JSON.parse(data);
+
+  // Initialize an array to store the MongoDB documents
+  const mongodbDocuments = [];
+
+  // Iterate through the items in the Postman Collection and transform the data
+  postmanCollection.item.forEach((item) => {
+    const { name, request } = item;
+    const { method, header, body, url } = request;
+
+    // Create a MongoDB document for each item
+    const doc = {
+      name,
+      method,
+      url,
+      headers: header.reduce((acc, curr) => {
+        acc[curr.key] = curr.value;
+        return acc;
+      }, {}),
+      body,
+    };
+
+    // Append the document to the array
+    mongodbDocuments.push(doc);
+  });
+
+  // Write the MongoDB documents to a new JSON file
+  fs.writeFile(outputFilePath, JSON.stringify(mongodbDocuments, null, 2), 'utf8', (err) => {
+    if (err) {
+      console.error('Error writing to file:', err);
+      return;
+    }
+    console.log('Conversion successful! Output written to', outputFilePath);
+  });
+});
