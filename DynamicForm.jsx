@@ -60,3 +60,55 @@ const DynamicForm = ({ formFields }) => {
 };
 
 export default DynamicForm;
+
+
+
+
+const api = axios.create({
+    baseURL: 'https://your-api-url.com/',
+    // You can add more default settings if needed
+});
+// In your App component or wherever you use the DynamicForm component
+import React from 'react';
+import DynamicForm from './DynamicForm';
+import formJson from './formConfig.json';
+import api from './api'; // Import the Axios instance
+
+const App = () => {
+    return (
+        <div>
+            <DynamicForm formFields={formJson} api={api} />
+        </div>
+    );
+};
+
+export default App;
+
+
+
+
+import React, { useState } from 'react';
+
+const DynamicForm = ({ formFields, api }) => {
+    const [formData, setFormData] = useState({});
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await api.post('/submit-form', formData);
+            console.log(response.data);
+            // Handle the response
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            // Handle errors
+        }
+    };
+
+    // Render form fields...
+};
+
+export default DynamicForm;
