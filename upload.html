@@ -7,6 +7,26 @@
     <title>Upload File</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* CSS styles go here */
+        .checklist {
+        list-style-type: none; /* Remove default list bullet */
+        padding: 0; /* Remove default padding */
+    }
+    
+    .checklist li {
+        padding-left: 1.5em; /* Add padding to the left of the list item */
+        position: relative; /* Needed for absolute positioning of the pseudo-element */
+    }
+    
+    .checklist li::before {
+        content: '✓'; /* Check mark */
+        position: absolute; /* Position the check mark absolutely within the list item */
+        left: 0; /* Align the check mark to the left edge of the list item */
+        color: green; /* Color of the check mark */
+    }
+    </style>
+    
 </head>
 <body>
     <!-- Your content goes here -->
