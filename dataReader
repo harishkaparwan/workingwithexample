@@ -1,3 +1,4 @@
+#pip install selenium pytesseract Pillow
 import time
 from selenium import webdriver
 from PIL import Image
