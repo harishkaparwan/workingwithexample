@@ -1,0 +1,112 @@
+import time
+from selenium import webdriver
+from PIL import Image
+import pytesseract
+import os
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import Select
+
+# Set up Selenium WebDriver
+# Note: Ensure the WebDriver executable is in your PATH
+driver = webdriver.Chrome()
+#driver = webdriver.Chrome(executable_path='chromedriver')
+# Get the current directory's path
+current_directory = os.path.dirname(os.path.abspath(__file__))
+
+# Append the driver's filename to the path
+# For Chrome
+#chrome_driver_path = os.path.join(current_directory, 'chromedriver')
+#driver = webdriver.Chrome(executable_path=chrome_driver_path)
+#driver = webdriver.Firefox()
+#driver.get("https://dev.to")
+ 
+#driver.find_element_by_id("nav-search").send_keys("Selenium")
+# Navigate to the webpage
+driver.get('https://www.lowes.com/pd/Filtrete-14-in-W-x-20-in-L-x-1-in-5-MERV-300-MPR-Basic-Dust-and-Lint-Electrostatic-Air-Filter-3-Pack/5014737947?idProductFound=false&idExtracted=true')
+time.sleep(5) 
+#driver.find_element_by_id("search-query").send_keys("5014737947")
+#input_element = driver.find_element(By.ID, "search-query")
+#input_element.clear()  # Clear the input field if needed
+#input_element.send_keys("5014737947")
+#time.sleep(5) 
+# To submit the form, you can either find the submit button and click it
+#driver.execute_script("document.forms[0].submit();")
+
+time.sleep(5)
+#submit_button.click()
+#submit_button.submit()
+# Capture the screenshot
+#radio_button = driver.find_element(By.XPATH, '//*[@id="app"]/div[2]/div[6]/div/div/div[2]/div/div[10]/div/div[2]/div[1]/div[1]/div/label/span[1]/input')
+#radio_button.click()
+# Locate the radio button by XPath and click on it
+radio_button = driver.find_element(By.XPATH, '//input[@type="radio" and @value="subscribe"]')
+radio_button.click()
+time.sleep(5) 
+#dropdown = driver.find_element(By.CSS_SELECTOR, '[data-testid="frequencyDropdown"]')
+wait = WebDriverWait(driver, 10)
+#dropdown = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '[data-testid="frequencyDropdown"]')))
+
+# Now interact with the dropdown
+# Click on the dropdown to expand it (if necessary)
+#dropdown.click()
+#document.getElementsByClassName('hiddenInputDD').subscription.value
+value = driver.execute_script("return document.getElementsByClassName('hiddenInputDD').subscription.value")
+#value = driver.execute_script('return document.title;')
+
+time.sleep(5)
+print('################################################################');
+print("Default Subscription:", value)
+print('################################################################');
+
+# Use the Select class to interact with the dropdown options
+dropdown = driver.find_element(By.CSS_SELECTOR, 'select[data-testid="frequencyDropdown"]')
+select = Select(dropdown)
+time.sleep(5) 
+
+# Retrieve all options within the dropdown
+options = select.options
+subscriptions = []
+# Iterate over the options and print their values
+for option in options:
+    if option.get_attribute('value') != '':
+        subscriptions.append(option.get_attribute('value'))
+time.sleep(5) 
+print('################################################################');
+print("Monthly Subscription:", subscriptions)
+print('################################################################');
+time.sleep(5) 
+
+p_elements = driver.find_element(By.XPATH, "//div[contains(@class, 'item-model')]//p")
+
+# Now you can interact with the found element
+# For example, you can print its text content
+print('################################################################');
+for p_element in p_elements:
+    # For example, print the text of each <p> element
+    print('Data #', p_element.text)
+
+print('################################################################');
+
+screenshot_path = '/Users/harishkaparwan/Developer/programming/ML/screenreader/webpage_screenshot.png'
+driver.save_screenshot(screenshot_path)
+
+# Close the WebDriver
+driver.quit()
+
+# Use pytesseract to extract text from the screenshot
+# Note: You might need to specify the path to the tesseract executable if it's not in your PATH
+# pytesseract.pytesseract.tesseract_cmd = r'<full_path_to_your_tesseract_executable>'
+text = pytesseract.image_to_string(Image.open(screenshot_path))
+
+# Print or validate the extracted text
+print(text)
+
+# Perform your validation here
+# For example, check if a certain string is in the text:
+if 'expected text' in text:
+    print('Validation successful!')
+else:
+    print('Validation failed.')
