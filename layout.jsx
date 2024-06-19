@@ -1,43 +1,51 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+ server.route({
+        method: 'GET',
+        path: '/run-python',
+        handler: (request, h) => {
+            return new Promise((resolve, reject) => {
+                exec('python3 script.py', (error, stdout, stderr) => {
+                    if (error) {
+                        console.error(`exec error: ${error}`);
+                        return reject(error);
+                    }
+                    if (stderr) {
+                        console.error(`stderr: ${stderr}`);
+                        return reject(stderr);
+                    }
+                    resolve(stdout);
+                });
+            });
+        }
+    });
 
-const App = () => {
-  const [selectedScript, setSelectedScript] = useState('');
-  const [output, setOutput] = useState('');
-  const [error, setError] = useState('');
 
-  const handleSelectChange = (e) => {
-    setSelectedScript(e.target.value);
-  };
 
-  const executeScript = async () => {
-    try {
-      const response = await axios.post('http://localhost:5000/run-script', { scriptName: selectedScript });
-      setOutput(response.data.output);
-      setError(response.data.error);
-    } catch (err) {
-      setError('Error executing script');
-    }
-  };
 
-  return (
-    <div>
-      <h1>Run Python Script</h1>
-      <select value={selectedScript} onChange={handleSelectChange}>
-        <option value="">Select a script</option>
-        <option value="script1">Script 1</option>
-        <option value="script2">Script 2</option>
-        {/* Add more options as needed */}
-      </select>
-      <button onClick={executeScript}>Run</button>
-      <div>
-        <h2>Output</h2>
-        <pre>{output}</pre>
-        <h2>Error</h2>
-        <pre>{error}</pre>
-      </div>
-    </div>
-  );
-};
 
-export default App;
+server.route({
+        method: 'POST',
+        path: '/run-python',
+        handler: (request, h) => {
+            const { script } = request.payload;
+
+            return new Promise((resolve, reject) => {
+                exec(`python3 ${script}`, (error, stdout, stderr) => {
+                    if (error) {
+                        console.error(`exec error: ${error}`);
+                        return reject(error);
+                    }
+                    if (stderr) {
+                        console.error(`stderr: ${stderr}`);
+                        return reject(stderr);
+                    }
+                    resolve(stdout);
+                });
+            });
+        },
+        options: {
+            payload: {
+                parse: true,
+                multipart: true
+            }
+        }
+    });
