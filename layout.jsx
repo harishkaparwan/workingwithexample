@@ -1,22 +1,28 @@
-# Use an official Node.js runtime as a parent image
-FROM node:14
+function getPythonVersion() {
+  exec('python3 --version', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing Python command: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.error(`Python stderr: ${stderr}`);
+      return;
+    }
+    console.log(`Python version: ${stdout}`);
+  });
 
-# Set the working directory in the container
-WORKDIR /app
+  exec('python --version', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing Python command: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.error(`Python stderr: ${stderr}`);
+      return;
+    }
+    console.log(`Python version: ${stdout}`);
+  });
+}
 
-# Install Python and pip
-RUN apt-get update && \
-    apt-get install -y python3 python3-pip && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install the required Python packages
-RUN pip3 install requests tabulate pandas numpy
-
-# Copy your Node.js application to the container
-COPY . .
-
-# Install Node.js dependencies
-RUN npm install
-
-# Command to run your application
-CMD ["node", "your-node-app.js"]
+// Call the function
+getPythonVersion();
