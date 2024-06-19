@@ -1,51 +1,40 @@
- server.route({
-        method: 'GET',
-        path: '/run-python',
-        handler: (request, h) => {
-            return new Promise((resolve, reject) => {
-                exec('python3 script.py', (error, stdout, stderr) => {
-                    if (error) {
-                        console.error(`exec error: ${error}`);
-                        return reject(error);
-                    }
-                    if (stderr) {
-                        console.error(`stderr: ${stderr}`);
-                        return reject(stderr);
-                    }
-                    resolve(stdout);
-                });
-            });
-        }
-    });
+import React, { useState, useEffect } from 'react';
 
+const ScriptDropdown = () => {
+    const [scripts, setScripts] = useState([]);
+    const [selectedScript, setSelectedScript] = useState('');
 
+    useEffect(() => {
+        fetch('/scripts')
+            .then(response => response.json())
+            .then(data => setScripts(data))
+            .catch(error => console.error('Error fetching scripts:', error));
+    }, []);
 
+    const handleChange = (event) => {
+        setSelectedScript(event.target.value);
+    };
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        console.log('Selected script:', selectedScript);
+        // Here you can add logic to send the selected script to your server for execution
+    };
 
-server.route({
-        method: 'POST',
-        path: '/run-python',
-        handler: (request, h) => {
-            const { script } = request.payload;
+    return (
+        <form onSubmit={handleSubmit}>
+            <label htmlFor="script">Choose a script:</label>
+            <select id="script" name="script" value={selectedScript} onChange={handleChange}>
+                <option value="">Select a script</option>
+                {scripts.map((script, index) => (
+                    <option key={index} value={script}>
+                        {script}
+                    </option>
+                ))}
+            </select>
+            <button type="submit">Run</button>
+        </form>
+    );
+};
 
-            return new Promise((resolve, reject) => {
-                exec(`python3 ${script}`, (error, stdout, stderr) => {
-                    if (error) {
-                        console.error(`exec error: ${error}`);
-                        return reject(error);
-                    }
-                    if (stderr) {
-                        console.error(`stderr: ${stderr}`);
-                        return reject(stderr);
-                    }
-                    resolve(stdout);
-                });
-            });
-        },
-        options: {
-            payload: {
-                parse: true,
-                multipart: true
-            }
-        }
-    });
+export default ScriptDropdown;
