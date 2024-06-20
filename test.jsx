@@ -1,77 +1,43 @@
-react
-
 import React, { useState } from 'react';
-import './App.css';
-import userAvatar from './path-to-user-avatar.jpg'; // Replace with your image path
-import botAvatar from './path-to-bot-avatar.jpg'; // Replace with your image path
+import axios from 'axios';
 
 function App() {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
+  const [file, setFile] = useState(null);
 
-  const sendMessage = (e) => {
-    e.preventDefault();
-    const newMessage = { text: input, sender: 'user' };
-    setMessages([...messages, newMessage]);
-    getBotResponse(input);
-    setInput('');
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
   };
 
-  const getBotResponse = (userInput) => {
-    // Mock response - replace this with an API call or more complex logic in a real app
-    const botResponse = { text: `Bot response to "${userInput}"`, sender: 'bot' };
-    setMessages(messages => [...messages, botResponse]);
+  const handleFileUpload = async () => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post('http://localhost:5000/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        responseType: 'blob',
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'processed_file.txt'); // specify the file name here
+      document.body.appendChild(link);
+      link.click();
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Chat with our Bot</h1>
-        <div className="chat-window">
-          {messages.map((message, index) => (
-            <div key={index} className={message.sender === 'user' ? 'user-message' : 'bot-message'}>
-              <img 
-                src={message.sender === 'user' ? userAvatar : botAvatar} 
-                alt={message.sender} 
-                className="avatar"
-              />
-              <p>{message.text}</p>
-            </div>
-          ))}
-        </div>
-        <form onSubmit={sendMessage}>
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            type="text"
-            placeholder="Type a message..."
-          />
-          <button type="submit">Send</button>
-        </form>
-      </header>
+    <div>
+      <h1>File Upload</h1>
+      <input type="file" onChange={handleFileChange} />
+      <button onClick={handleFileUpload}>Upload</button>
     </div>
   );
 }
 
 export default App;
-
-
-/* Existing styles... */
-
-.avatar {
-  width: 30px; /* Adjust size as needed */
-  height: 30px; /* Adjust size as needed */
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-.user-message, .bot-message {
-  display: flex;
-  align-items: center;
-}
-
-.user-message p, .bot-message p {
-  margin: 0;
-}
-
-/* Add any additional styling as needed */
