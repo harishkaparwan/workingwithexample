@@ -1,0 +1,21 @@
+const fs = require('fs').promises;
+const path = require('path');
+
+const directoryPath = 'path/to/your/directory';
+
+async function deleteAllFiles() {
+  try {
+    const files = await fs.readdir(directoryPath);
+
+    await Promise.all(files.map(async (file) => {
+      const filePath = path.join(directoryPath, file);
+      await fs.unlink(filePath);
+      console.log(`Deleted file: ${file}`);
+    }));
+
+  } catch (err) {
+    console.error('Error:', err);
+  }
+}
+
+deleteAllFiles();
