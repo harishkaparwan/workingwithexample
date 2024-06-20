@@ -1,0 +1,11 @@
+We received a request from Site Producer and they download data from Merch Portal
+Site Producer will upload in Confluence Page
+Developer Download File and start processing file
+As part of processing we create 2 csv files, Subscription_MB and CHILD_MB_Subscription
+We will create 2 seperate JIRA story and Attach each file on it
+Once DIgital Commerce Team complete above JIRA story then we start validation for it.
+We will validate each item against Bifrost Items Response to check ‘5% Promo’
+Once we have validated all items then we will upload files in GCP bucket
+In GCP Bucket we will upload data in 2 places one with 5% and one without 5%
+After GCP Bucket validation, we will execute a ‘Product Batch Job’ to process above files
+Once above Jobs is executed then we will send confirmation to product team for validation
