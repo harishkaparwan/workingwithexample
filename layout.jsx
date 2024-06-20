@@ -1,75 +1,68 @@
-import React, { useState } from 'react';
-import { Button, TextField, MenuItem, Select, InputLabel, FormControl, Typography, Box } from '@mui/material';
-import { CloudUpload as CloudUploadIcon } from '@mui/icons-material';
+'use strict';
 
-const MyForm = () => {
-  const [selectedOption, setSelectedOption] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
+const Hapi = require('@hapi/hapi');
+const fs = require('fs');
+const path = require('path');
+const { exec } = require('child_process');
 
-  const handleSelectChange = (event) => {
-    setSelectedOption(event.target.value);
-  };
+const UPLOAD_DIR = path.join(__dirname, 'uploads');
+const PROCESSED_DIR = path.join(__dirname, 'processed');
+fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+fs.mkdirSync(PROCESSED_DIR, { recursive: true });
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
+const init = async () => {
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Handle form submission
-    console.log('Selected Option:', selectedOption);
-    console.log('Selected File:', selectedFile);
-  };
+    const server = Hapi.server({
+        port: 5000,
+        host: 'localhost'
+    });
 
-  return (
-    <Box sx={{ maxWidth: 500, mx: 'auto', mt: 5, p: 3, border: '1px solid #ccc', borderRadius: 1 }}>
-      <Typography variant="h5" component="h2" gutterBottom>
-        My Form
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <FormControl fullWidth margin="normal">
-          <InputLabel id="select-label">Select Option</InputLabel>
-          <Select
-            labelId="select-label"
-            value={selectedOption}
-            onChange={handleSelectChange}
-            label="Select Option"
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <MenuItem value={10}>Option 1</MenuItem>
-            <MenuItem value={20}>Option 2</MenuItem>
-            <MenuItem value={30}>Option 3</MenuItem>
-          </Select>
-        </FormControl>
+    server.route({
+        method: 'POST',
+        path: '/upload',
+        options: {
+            payload: {
+                output: 'stream',
+                parse: true,
+                allow: 'multipart/form-data',
+                multipart: true
+            }
+        },
+        handler: (request, h) => {
+            const file = request.payload.file;
+            const filePath = path.join(UPLOAD_DIR, file.hapi.filename);
+            const fileStream = fs.createWriteStream(filePath);
 
-        <FormControl fullWidth margin="normal">
-          <Button
-            variant="contained"
-            component="label"
-            startIcon={<CloudUploadIcon />}
-          >
-            Upload File
-            <input
-              type="file"
-              hidden
-              onChange={handleFileChange}
-            />
-          </Button>
-          {selectedFile && (
-            <Typography variant="body2" mt={2}>
-              Selected File: {selectedFile.name}
-            </Typography>
-          )}
-        </FormControl>
+            return new Promise((resolve, reject) => {
+                file.pipe(fileStream);
 
-        <Button type="submit" variant="contained" color="primary" fullWidth>
-          Submit
-        </Button>
-      </form>
-    </Box>
-  );
+                file.on('end', () => {
+                    // Process the file with Python script
+                    exec(`python process.py ${filePath}`, (error, stdout, stderr) => {
+                        if (error) {
+                            console.error(`exec error: ${error}`);
+                            reject(error);
+                        }
+
+                        const processedFilePath = stdout.trim();
+                        resolve(h.file(processedFilePath));
+                    });
+                });
+
+                file.on('error', (err) => {
+                    reject(err);
+                });
+            });
+        }
+    });
+
+    await server.start();
+    console.log('Server running on %s', server.info.uri);
 };
 
-export default MyForm;
+process.on('unhandledRejection', (err) => {
+    console.log(err);
+    process.exit(1);
+});
+
+init();
