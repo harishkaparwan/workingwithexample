@@ -1,43 +1,44 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+# First stage: Use Node.js base image to install Node.js dependencies
+FROM node:14 as node-stage
 
-function App() {
-  const [file, setFile] = useState(null);
+# Set the working directory
+WORKDIR /app
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-  const handleFileUpload = async () => {
-    const formData = new FormData();
-    formData.append('file', file);
+# Install Node.js dependencies
+RUN npm install
 
-    try {
-      const response = await axios.post('http://localhost:5000/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        responseType: 'blob',
-      });
+# Second stage: Use Python base image to install Python dependencies
+FROM python:3.9 as python-stage
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'processed_file.txt'); // specify the file name here
-      document.body.appendChild(link);
-      link.click();
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    }
-  };
+# Set the working directory
+WORKDIR /app
 
-  return (
-    <div>
-      <h1>File Upload</h1>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleFileUpload}>Upload</button>
-    </div>
-  );
-}
+# Copy requirements.txt
+COPY requirements.txt ./
 
-export default App;
+# Install Python dependencies
+RUN pip install -r requirements.txt
+
+# Final stage: Use Node.js base image to combine both environments
+FROM node:14
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the Node.js dependencies from the node-stage
+COPY --from=node-stage /app /app
+
+# Copy the Python dependencies from the python-stage
+COPY --from=python-stage /usr/local /usr/local
+
+# Copy the application code
+COPY . .
+
+# Expose the application port
+EXPOSE 3000
+
+# Command to run the application
+CMD ["npm", "start"]
