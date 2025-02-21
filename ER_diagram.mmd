@@ -1,0 +1,25 @@
+erDiagram
+    OFFER {
+        int offer_id
+        string offer_name
+        date offer_date
+    }
+    
+    ITEM {
+        string item_name
+        int item_number
+    }
+    
+    LOCATION {
+        string location_name
+        int location_number
+    }
+    
+    STORE {
+        string store_name
+        int store_number
+    }
+    
+    OFFER ||--o{ ITEM : has
+    STORE ||--o{ OFFER : has
+    OFFER ||--|| LOCATION : has

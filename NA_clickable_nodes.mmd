@@ -1,0 +1,10 @@
+graph TD
+    A[Start] --> B[Task 1]
+    B --> C{Decision}
+    C -->|Yes| D[Success]
+    C -->|No| E[Failure]
+
+    click A "https://example.com/start" "Go to Start"
+    click B "https://example.com/task1" "Learn more about Task 1"
+    click D "https://example.com/success" "View Success Details"
+    click E "https://example.com/failure" "Learn Why it Failed"

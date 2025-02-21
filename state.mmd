@@ -1,0 +1,13 @@
+stateDiagram-v2
+    [*] --> Buid_Package
+    Buid_Package --> Triggering : Commit/Merge Request
+    Triggering --> Building : Start Build
+    Building --> Testing : Build Successful
+    Building --> Failure : Build Failed
+    Testing --> Deploying : Tests Passed
+    Testing --> Failure : Tests Failed
+    Deploying --> Success : Deployment Successful
+    Deploying --> Failure : Deployment Failed
+    Success --> Notify : Send Notification Email
+    Notify --> [*] : End
+    Failure --> Notify : Pipeline failed

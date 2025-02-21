@@ -1,0 +1,11 @@
+graph TD
+    A[Start]:::startNode --> B[Task]:::taskNode
+    B --> C[Decision]:::decisionNode
+    C -->|Yes| D[Success]:::successNode
+    C -->|No| E[Failure]:::failureNode
+
+    classDef startNode fill:#4caf50,stroke:#333,stroke-width:2px;
+    classDef taskNode fill:#ffeb3b,stroke:#333,stroke-width:2px;
+    classDef decisionNode fill:#03a9f4,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef successNode fill:#8bc34a,stroke:#333,stroke-width:2px;
+    classDef failureNode fill:#f44336,stroke:#333,stroke-width:2px;

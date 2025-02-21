@@ -1,0 +1,5 @@
+graph TD
+  A[Developer commits code] --> B[LEC CI/CD executes]
+  B --> C{Is the feature vendor-specific?}
+  C -- Yes --> D[Deploy in `spotlight-ui` pipeline]
+  C -- No --> E[Deploy in `spotlight-planning-dev` pipeline]

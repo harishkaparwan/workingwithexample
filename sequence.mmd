@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant Developer
+    participant CI/CD as LEC CI/CD
+    participant Decision as Decision Engine
+    participant SpotlightUI as spotlight-ui Pipeline
+    participant SpotlightDev as spotlight-planning-dev Pipeline
+
+    Developer->>CI/CD: Commit code
+    CI/CD->>Decision: Execute CI/CD process
+    Decision-->>Decision: Is the feature vendor-specific?
+    Decision-->>SpotlightUI: Yes, deploy to spotlight-ui
+    Decision-->>SpotlightDev: No, deploy to spotlight-planning-dev

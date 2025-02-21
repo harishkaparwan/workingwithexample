@@ -1,0 +1,39 @@
+classDiagram
+    class OfferDAOInterface {
+        +create()
+        +read()
+        +update()
+        +delete()
+    }
+
+    class HibernateJPADAOInterface {
+        +create()
+        +read()
+        +update()
+        +delete()
+    }
+
+    class OfferDAO {
+        +create()
+        +read()
+        +update()
+        +delete()
+    }
+
+    class OfferService {
+        - OfferDAO offerDAO
+        +create()
+        +read()
+        +update()
+        +delete()
+    }
+
+    class Controller {
+        - OfferService offerService
+        +invokeMethods()
+    }
+
+    OfferDAOInterface <|.. OfferDAO
+    HibernateJPADAOInterface <|.. OfferDAO
+    OfferDAO <-- OfferService : uses
+    OfferService <-- Controller : injects
