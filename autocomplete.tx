@@ -1,0 +1,293 @@
+import React, { useState, useMemo, useEffect } from 'react';
+import { Autocomplete, TextField, Typography, Box, CircularProgress } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import axios from 'axios'; // Import axios for API calls
+
+// Define a simple dark theme for better contrast and modern look
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#90CAF9', // Light blue
+    },
+    secondary: {
+      main: '#F48FB1', // Light pink
+    },
+    background: {
+      default: '#121212', // Dark background
+      paper: '#1D1D1D',  // Slightly lighter dark for paper elements
+    },
+    text: {
+      primary: '#E0E0E0', // Light text
+      secondary: '#B0B0B0', // Slightly darker light text
+    },
+  },
+  typography: {
+    fontFamily: '"Inter", sans-serif', // Using Inter font as requested
+    h6: {
+      color: '#E0E0E0',
+    },
+    body2: {
+        color: '#B0B0B0',
+    }
+  },
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '12px', // Rounded corners for TextField
+          },
+          '& .MuiInputLabel-root': {
+              color: '#B0B0B0', // Label color
+          },
+          '& .MuiInputBase-input': {
+              color: '#E0E0E0', // Input text color
+          },
+        },
+      },
+    },
+    MuiAutocomplete: {
+      styleOverrides: {
+        paper: {
+          borderRadius: '12px', // Rounded corners for Autocomplete dropdown
+          backgroundColor: '#282828', // Background for dropdown
+        },
+        option: {
+            '&:hover': {
+                backgroundColor: '#3A3A3A', // Hover effect for options
+            },
+            color: '#E0E0E0', // Option text color
+        },
+      },
+    },
+    MuiButton: {
+        styleOverrides: {
+            root: {
+                borderRadius: '12px', // Rounded corners for buttons if any were used
+            },
+        },
+    },
+  },
+});
+
+// A list of example options for the autocomplete (simulating a backend database)
+const allOptions = [
+  'The quick brown fox jumps over the lazy dog',
+  'A journey of a thousand miles begins with a single step',
+  'All that glitters is not gold',
+  'Actions speak louder than words',
+  'When in Rome, do as the Romans do',
+  'The early bird catches the worm',
+  'Every cloud has a silver lining',
+  'Look before you leap',
+  'Necessity is the mother of invention',
+  'Where there is a will, there is a way',
+  'Practice makes perfect for everyone',
+  'The pen is mightier than the sword of power',
+  'Two heads are better than one solution',
+  'You cant judge a book by its cover',
+  'The best things in life are free',
+  'Better late than never in the meeting',
+  'Curiosity killed the cat but gave knowledge',
+  'Dont count your chickens before they hatch',
+  'Easy come, easy go with money',
+  'Fortune favors the brave warrior',
+  'Haste makes waste always',
+  'Keep your friends close and your enemies closer',
+  'Knowledge is power over all',
+  'Laughter is the best medicine for all',
+  'Like father, like son in the family',
+  'Make hay while the sun shines brightest',
+  'No pain, no gain for effort',
+  'Once bitten, twice shy about that',
+  'Out of sight, out of mind completely',
+  'Rome wasnt built in a day for sure',
+  'Slow and steady wins the race eventually',
+  'Still waters run deep always',
+  'Strike while the iron is hot and ready',
+  'There is no place like home sweet home',
+  'Time heals all wounds eventually',
+  'Too many cooks spoil the broth of soup',
+  'When it rains, it pours like crazy',
+  'You cant teach an old dog new tricks easily',
+  'An apple a day keeps the doctor away forever',
+  'A stitch in time saves nine problems',
+  'Barking dogs seldom bite humans',
+  'Birds of a feather flock together always',
+  'Cleanliness is next to godliness for life',
+  'Dont put all your eggs in one basket',
+  'Every dog has its day to shine',
+  'Familiarity breeds contempt always',
+  'Good things come to those who wait patiently',
+  'Honesty is the best policy always',
+  'If you cant beat em, join em together',
+  'In for a penny, in for a pound of work',
+  'Its never too late to learn something new',
+  'Least said, soonest mended quickly',
+  'Money doesnt grow on trees easily',
+  'No man is an island by himself',
+  'One mans trash is another mans treasure',
+  'Patience is a virtue for many',
+  'The grass is always greener on the other side',
+  'There is honor among thieves sometimes',
+  'Walls have ears and secrets',
+  'Waste not, want not for resources',
+  'What goes around comes around eventually',
+  'Where there is smoke, there is fire often',
+  'You reap what you sow in life',
+];
+
+export default function App() {
+  const [inputValue, setInputValue] = useState('');
+  const [apiSuggestions, setApiSuggestions] = useState([]); // State to store suggestions from API
+  const [isLoading, setIsLoading] = useState(false); // State to manage loading indicator
+  const [showError, setShowError] = useState(false); // State to show "no record found" error
+
+  // useEffect hook to trigger API call when inputValue changes
+  useEffect(() => {
+    // Split the input value into words and filter out empty strings
+    const words = inputValue.trim().split(/\s+/).filter(Boolean);
+    const wordCount = words.length;
+
+    // If less than 3 words, clear suggestions, loading state, and errors
+    if (wordCount < 3) {
+      setApiSuggestions([]);
+      setIsLoading(false);
+      setShowError(false);
+      return; // Exit the effect
+    }
+
+    // Set loading to true and clear any previous error when starting a new search
+    setIsLoading(true);
+    setShowError(false);
+
+    // Simulate an API call with a debounce delay to prevent excessive requests
+    const delayDebounceFn = setTimeout(() => {
+      // In a real application, you would replace this simulation with an actual axios.get call:
+      /*
+      axios.get(`/api/search?q=${inputValue}`) // Replace with your actual API endpoint
+        .then(response => {
+          const data = response.data; // Assuming your API returns an array of strings
+          setApiSuggestions(data);
+          setShowError(data.length === 0); // Set error if no data is returned
+          setIsLoading(false);
+        })
+        .catch(error => {
+          console.error('API Error:', error);
+          setApiSuggestions([]); // Clear suggestions on error
+          setShowError(true); // Show error for API failures
+          setIsLoading(false);
+        });
+      */
+
+      // --- Start: Simulated API Response ---
+      // This part simulates filtering data as if it came from an API
+      const simulatedFilteredData = allOptions.filter(option =>
+        option.toLowerCase().includes(inputValue.toLowerCase())
+      );
+      setApiSuggestions(simulatedFilteredData);
+      setShowError(simulatedFilteredData.length === 0);
+      setIsLoading(false);
+      // --- End: Simulated API Response ---
+
+    }, 500); // 500ms delay to simulate network latency and debounce user input
+
+    // Cleanup function: clear the timeout if inputValue changes before the delay is over
+    return () => clearTimeout(delayDebounceFn);
+  }, [inputValue]); // The effect re-runs whenever inputValue changes
+
+  // Determine the options to display in the Autocomplete dropdown
+  // This memo ensures options are only updated when apiSuggestions or inputValue change,
+  // and respects the 3-word minimum for display.
+  const optionsToDisplay = useMemo(() => {
+    const words = inputValue.trim().split(/\s+/).filter(Boolean);
+    const wordCount = words.length;
+
+    if (wordCount < 3) {
+      return []; // No options displayed if less than 3 words are typed
+    }
+    return apiSuggestions; // Otherwise, use the suggestions fetched from the API
+  }, [apiSuggestions, inputValue]);
+
+  return (
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <Box
+        className="flex flex-col items-center justify-center min-h-screen p-4"
+        sx={{
+          backgroundColor: 'background.default',
+          color: 'text.primary',
+        }}
+      >
+        <Typography variant="h6" gutterBottom className="mb-6">
+          Search for Phrases (min. 3 words)
+        </Typography>
+        <Autocomplete
+          freeSolo // Allows user to enter text not present in options
+          options={optionsToDisplay} // Options are now driven by the API response
+          getOptionLabel={(option) => option}
+          inputValue={inputValue}
+          onInputChange={(event, newInputValue) => {
+            setInputValue(newInputValue);
+          }}
+          loading={isLoading} // Prop to show a loading indicator in the Autocomplete
+          // renderInput customizes the input field using TextField
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Type a phrase"
+              variant="outlined"
+              placeholder="e.g., The quick brown fox"
+              fullWidth
+              error={showError} // Apply error styling if showError is true
+              helperText={
+                isLoading // Show "Searching..." when API call is in progress
+                  ? 'Searching...'
+                  : showError // Show "No record found" if API returned no results
+                  ? 'No record found for this phrase.'
+                  : inputValue.trim().split(/\s+/).filter(Boolean).length < 3
+                  ? 'Please type at least 3 words to search.' // Prompt for more input
+                  : '' // No helper text if valid input and results found
+              }
+              InputProps={{
+                ...params.InputProps,
+                // Add a circular progress indicator at the end of the input field when loading
+                endAdornment: (
+                  <React.Fragment>
+                    {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                    {params.InputProps.endAdornment}
+                  </React.Fragment>
+                ),
+              }}
+              sx={{
+                minWidth: { xs: '90%', sm: '400px', md: '500px' }, // Responsive width for the input field
+                maxWidth: '600px',
+                // Conditional styling for helper text color
+                '& .MuiFormHelperText-root': {
+                    color: isLoading
+                        ? darkTheme.palette.text.secondary // Info color for loading state
+                        : showError
+                        ? darkTheme.palette.error.main // Red for error messages
+                        : darkTheme.palette.text.secondary, // Default info color
+                },
+              }}
+            />
+          )}
+          sx={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            '& .MuiAutocomplete-popper': {
+              width: 'auto !important', // Ensure the dropdown width adjusts automatically
+            },
+          }}
+        />
+        <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary' }}>
+            Current input: "{inputValue}"
+        </Typography>
+      </Box>
+    </ThemeProvider>
+  );
+}
