@@ -1,9 +1,8 @@
-const mapStateToProps = (state, ownProps) => {
-  const searchResult = state.searchSelectors.getSearchResult(state, ownProps);
-  const journey = workshopSelectors.getSelectedJourney(state, ownProps);
+const mapDispatchToProps = (dispatch, ownProps) => {
+  console.log('ownProps in mapDispatchToProps:', ownProps);
 
   return {
-    searchResult,
-    journey
+    changePredefinedQuickFilters: (filters) => dispatch(filterActions.genericChangePredefinedQuickFilters(filters)),
+    searchJourneys: () => dispatch(journeyActions.handleSearchJourneysWizard(ownProps.namespace, ownProps.settingsNamespace, ownProps.moduleSettingsNamespace))
   };
 };
