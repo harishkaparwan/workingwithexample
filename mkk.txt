@@ -1,0 +1,9 @@
+const mapStateToProps = (state, ownProps) => {
+  const searchResult = state.searchSelectors.getSearchResult(state, ownProps);
+  const journey = workshopSelectors.getSelectedJourney(state, ownProps);
+
+  return {
+    searchResult,
+    journey
+  };
+};
