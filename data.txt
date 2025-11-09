@@ -1,1 +1,22 @@
 
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/saml2/**", "/login/saml2/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .saml2Login(Customizer.withDefaults())
+            .logout(logout -> logout.logoutSuccessUrl("/"))
+            // important: avoid your 403 “Invalid CSRF Token 'null'” on SAML POSTs
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/saml2/**", "/login/saml2/**")
+            );
+
+        return http.build();
+    }
+}
